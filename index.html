@@ -46,7 +46,7 @@
   .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.35),transparent 40%)}
   .hero .cap{position:absolute;left:var(--pad);bottom:28px;z-index:2;color:#fff}
-  .hero .cap h1{font-weight:400;font-size:clamp(28px,4.6vw,62px);line-height:1;letter-spacing:-.02em;margin-bottom:10px}
+  .hero .cap h1{font-weight:400;font-size:clamp(16px,2.3vw,31px);line-height:1;letter-spacing:-.02em;margin-bottom:10px}
   .hero .scroll{position:absolute;right:var(--pad);bottom:28px;z-index:2;color:#fff}
 
   /* Sections */
@@ -65,6 +65,7 @@
   .avail .enq{display:inline-block;margin-top:10px;border-bottom:1px solid var(--ink);padding-bottom:1px}
   #available:has(.avail:empty){display:none}
 
+  #film:has(.grid:empty){display:none}
   /* Grid */
   .grid{columns:3 280px;column-gap:clamp(14px,2vw,28px)}
   .work{break-inside:avoid;margin-bottom:clamp(14px,2vw,28px);cursor:zoom-in}
@@ -114,7 +115,7 @@
     <ul class="caps">
       <li><a href="#available">Available</a></li>
       <li><a href="#work">Work</a></li>
-      <li><a href="#about">About</a></li>
+      <li><a href="#film">Film</a></li>
       <li><a href="#contact">Contact</a></li>
       <li><a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a></li>
     </ul>
@@ -147,21 +148,12 @@
   <div class="grid" id="grid"></div>
 </section>
 
-<section id="about">
-  <div class="sec-head"><span class="caps">About</span></div>
-  <div class="about">
-    <div class="frame reveal"><img id="portrait" alt="Painting by Sam Balzer"></div>
-    <div class="reveal">
-      <p>Sam Balzer is a painter based in Aotearoa New Zealand, working between figurative studio paintings and landscapes made on location. [Replace with a short statement about your practice — what you make, what you're drawn to, and how you work.]</p>
-      <p>A second, optional paragraph for background: where you trained, recent projects, or the ideas running through your current body of work.</p>
-      <div class="cv">
-        <span>2026</span><span>Solo exhibition title — Gallery, City</span>
-        <span>2025</span><span>Mural commission — Location</span>
-        <span>2025</span><span>Group show title — Gallery, City</span>
-        <span>2024</span><span>Residency or award — Organisation</span>
-      </div>
-    </div>
+<section id="film" class="film-sec">
+  <div class="sec-head">
+    <span class="caps">Film</span>
+    <span class="caps" style="color:var(--muted)">Concept art &amp; art direction</span>
   </div>
+  <div class="grid" id="filmGrid"></div>
 </section>
 
 <section id="contact">
@@ -201,6 +193,8 @@
 const ARTIST = "Sam Balzer";
 const CATEGORIES = ["Figurative", "Landscape", "Drawing"];
 const HERO = { src: "images/2024-skeletons-and-figures.jpg", title: "A Bone to Pick", sub: "Oil — 2024" };
+// Film work: shown in the Film section (same image + thumbs/ rule as WORKS)
+const FILM = [];
 const PORTRAIT = "images/2026-portrait.jpg";
 const WORKS = [
   { title:"A Bone to Pick", year:"2024", medium:"Oil", size:"", cat:"Figurative", src:"images/2024-skeletons-and-figures.jpg" },
@@ -257,7 +251,7 @@ document.getElementById("yr").textContent=new Date().getFullYear();
 document.getElementById("heroImg").src=HERO.src||placeholder(42,0.6);
 document.getElementById("heroTitle").textContent=HERO.title;
 document.getElementById("heroSub").textContent=HERO.sub;
-document.getElementById("portrait").src=PORTRAIT||placeholder(7,1.25);
+{const p=document.getElementById("portrait");if(p)p.src=PORTRAIT||placeholder(7,1.25);}
 
 const EMAIL="sam@sbalzer.com";
 const avail=document.getElementById("avail");
@@ -270,6 +264,12 @@ WORKS.forEach((w,i)=>{ if(!w.available) return;
   el.querySelector(".frame").onclick=()=>openLb(i);
   avail.appendChild(el);
 });
+
+const filmGrid=document.getElementById("filmGrid");
+FILM.forEach((f,i)=>{const el=document.createElement("figure");el.className="work reveal";
+  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${f.title}" src="${f.src.replace(/^images\//,"images/thumbs/")}"></div>
+    <figcaption class="meta"><span><b>${f.title}</b>${f.year?", "+f.year:""}</span><span>${f.role||""}</span></figcaption>`;
+  el.onclick=()=>openFilm(i); filmGrid.appendChild(el);});
 
 const grid=document.getElementById("grid");
 WORKS.forEach((w,i)=>{
@@ -297,8 +297,11 @@ function show(i){const w=WORKS[i];cur=i;const v=visible();
   document.getElementById("lbInfo").innerHTML=`<b>${w.title}</b>${w.year?", "+w.year:""} ${line(w.medium,w.size)?"<span>— "+line(w.medium,w.size)+"</span>":""}`;
   document.getElementById("lbCount").textContent=`${v.indexOf(i)+1} / ${v.length}`;}
 function openLb(i){show(i);lb.classList.add("open");lb.setAttribute("aria-hidden","false");document.body.style.overflow="hidden"}
+function openFilm(i){const f=FILM[i];document.getElementById("lbImg").src=f.src;document.getElementById("lbImg").alt=f.title;
+  document.getElementById("lbInfo").innerHTML=`<b>${f.title}</b>${f.year?", "+f.year:""} ${f.role?"<span>— "+f.role+"</span>":""}`;
+  document.getElementById("lbCount").textContent="Film";cur=-1;lb.classList.add("open");document.body.style.overflow="hidden"}
 function closeLb(){lb.classList.remove("open");lb.setAttribute("aria-hidden","true");document.body.style.overflow=""}
-function step(d){const v=visible();show(v[(v.indexOf(cur)+d+v.length)%v.length])}
+function step(d){if(cur<0)return;const v=visible();show(v[(v.indexOf(cur)+d+v.length)%v.length])}
 document.getElementById("lbClose").onclick=closeLb;
 document.getElementById("lbPrev").onclick=()=>step(-1);
 document.getElementById("lbNext").onclick=()=>step(1);
