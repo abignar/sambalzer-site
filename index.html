@@ -187,11 +187,12 @@
    - Add one line below. Order here = order on the site.
    - Leave year / medium / size as "" to hide them.
    - `cat` must match one of the CATEGORIES.
+   - Add  availableOnly:true  to show a piece ONLY under Available work.
    - Add  available:"$1,200"  (or "Price on request") to show it under Available work.
      Remove it (or set it to "") once the piece sells.
    ============================================================ */
 const ARTIST = "Sam Balzer";
-const CATEGORIES = ["Figurative", "Landscape", "Still life", "Drawing"];
+const CATEGORIES = ["Figurative", "Landscape", "Drawing"];
 const HERO = { src: "images/2024-skeletons-and-figures.jpg", title: "A Bone to Pick", sub: "Oil — 2024" };
 // Film work: shown in the Film section (same image + thumbs/ rule as WORKS)
 const FILM = [
@@ -215,7 +216,7 @@ const WORKS = [
   { title:"A Bone to Pick", year:"2024", medium:"Oil", size:"", cat:"Figurative", src:"images/2024-skeletons-and-figures.jpg" },
   { title:"Alpine peak", year:"2023", medium:"", size:"", cat:"Landscape", src:"images/2023-alpine-peak.jpg" },
   { title:"Morning Brew", year:"2026", medium:"Oil on linen, framed", size:"75 × 60 cm", cat:"Figurative", available:"$2,895 NZD", src:"images/2026-skeleton-reading.jpg" },
-  { title:"Carolina Reaper", year:"2026", medium:"Framed", size:"13.5 × 13.5 cm", cat:"Still life", available:"$185 NZD", src:"images/2026-carolina-reaper.jpg" },
+  { title:"Carolina Reaper", year:"2026", medium:"Oil on wood, framed", size:"13.5 × 13.5 cm", cat:"", availableOnly:true, available:"$185 NZD", src:"images/2026-carolina-reaper.jpg" },
   { title:"Moored boats", year:"2023", medium:"", size:"", cat:"Landscape", src:"images/2023-moored-boats.jpg" },
   { title:"David", year:"2024", medium:"Oil on linen", size:"110 × 110 cm", cat:"Figurative", src:"images/2024-figure-in-landscape.jpg" },
   { title:"Big Wave", year:"2022", medium:"Oil", size:"", cat:"Landscape", src:"images/2022-surf-on-the-rocks.jpg" },
@@ -289,6 +290,7 @@ FILM.forEach((f,i)=>{const el=document.createElement("figure");el.className="wor
 
 const grid=document.getElementById("grid");
 WORKS.forEach((w,i)=>{
+  if(w.availableOnly) return;
   const el=document.createElement("figure");
   el.className="work reveal";el.dataset.cat=w.cat;el.dataset.i=i;
   el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(w.title,w.year)}" src="${thumbOf(w,i)}"></div>
@@ -311,7 +313,7 @@ const visible=()=>[...grid.querySelectorAll(".work:not(.hide)")].map(e=>+e.datas
 function show(i){const w=WORKS[i];cur=i;const v=visible();
   document.getElementById("lbImg").src=imgOf(w,i);document.getElementById("lbImg").alt=w.title;
   document.getElementById("lbInfo").innerHTML=`<b>${w.title}</b>${w.year?", "+w.year:""} ${line(w.medium,w.size)?"<span>— "+line(w.medium,w.size)+"</span>":""}`;
-  document.getElementById("lbCount").textContent=`${v.indexOf(i)+1} / ${v.length}`;}
+  document.getElementById("lbCount").textContent=(v.indexOf(i)<0?"":`${v.indexOf(i)+1} / ${v.length}`);}
 function openLb(i){show(i);lb.classList.add("open");lb.setAttribute("aria-hidden","false");document.body.style.overflow="hidden"}
 function openFilm(i){const f=FILM[i];document.getElementById("lbImg").src=f.src;document.getElementById("lbImg").alt=f.title;
   document.getElementById("lbInfo").innerHTML=`<b>${f.title}</b>${f.year?", "+f.year:""} ${f.role?"<span>— "+f.role+"</span>":""}`;
