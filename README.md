@@ -22,6 +22,7 @@ A single-page portfolio site. No build step: it's just `index.html` plus an `ima
 
    - Leave `year`, `medium` or `size` as `""` to hide them.
    - `cat` must be one of the `CATEGORIES` (currently Figurative, Landscape, Drawing). Add a new name to `CATEGORIES` to create a new filter.
+   - Add `available:"$1,200"` (or `"Price on request"`) to show the piece under **Available work** with an Enquire button. Delete it once the piece sells. If nothing is marked available, that section hides itself.
    - The grid fills **down each column**, so the first few lines in the list appear along the left-hand column first.
 
 4. **Commit and push.** Cloudflare Pages redeploys automatically within a minute.

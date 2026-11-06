@@ -26,7 +26,10 @@
   header{position:fixed;inset:0 0 auto 0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:22px var(--pad);transition:background .3s,color .3s}
   header.solid{background:rgba(242,240,235,.92);backdrop-filter:blur(8px);color:var(--ink)}
   header.over{color:#fff}
-  .logo{font-weight:500;letter-spacing:.18em;text-transform:uppercase;font-size:13px}
+  .logo{display:block;line-height:0}
+  .logo img{height:52px;width:auto;transition:filter .3s}
+  header.over .logo img{filter:invert(1)}
+  @media (max-width:720px){.logo img{height:40px}}
   nav ul{display:flex;gap:28px;list-style:none}
   nav a{opacity:.85;transition:opacity .2s}
   nav a:hover{opacity:1}
@@ -52,6 +55,15 @@
   .filters{display:flex;gap:22px;flex-wrap:wrap}
   .filters button{background:none;border:0;font:inherit;color:var(--muted);cursor:pointer;padding:2px 0;border-bottom:1px solid transparent;text-transform:uppercase;letter-spacing:.12em;font-size:11.5px;font-weight:500}
   .filters button.on{color:var(--ink);border-color:var(--ink)}
+
+  /* Available */
+  .avail{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:clamp(18px,2.6vw,36px)}
+  .avail .work{margin:0}
+  .avail .frame{aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;padding:8%}
+  .avail .frame img{width:auto;max-width:100%;max-height:100%;box-shadow:0 10px 30px rgba(0,0,0,.12)}
+  .avail .meta{flex-wrap:wrap}
+  .avail .enq{display:inline-block;margin-top:10px;border-bottom:1px solid var(--ink);padding-bottom:1px}
+  #available:has(.avail:empty){display:none}
 
   /* Grid */
   .grid{columns:3 280px;column-gap:clamp(14px,2vw,28px)}
@@ -97,9 +109,10 @@
 <body>
 
 <header id="hdr" class="over">
-  <a href="#top" class="logo">Sam Balzer</a>
+  <a href="#top" class="logo" aria-label="Sam Balzer — home"><img src="images/logo.png" alt="Sam Balzer"></a>
   <nav id="nav">
     <ul class="caps">
+      <li><a href="#available">Available</a></li>
       <li><a href="#work">Work</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#contact">Contact</a></li>
@@ -117,6 +130,14 @@
   </div>
   <a href="#work" class="scroll caps">Scroll ↓</a>
 </div>
+
+<section id="available">
+  <div class="sec-head">
+    <span class="caps">Available work</span>
+    <span class="caps" style="color:var(--muted)">Enquire for details</span>
+  </div>
+  <div class="avail" id="avail"></div>
+</section>
 
 <section id="work">
   <div class="sec-head">
@@ -146,7 +167,7 @@
 <section id="contact">
   <div class="sec-head"><span class="caps">Contact</span></div>
   <div class="contact">
-    <div><span class="label caps">Enquiries &amp; commissions</span><div class="big"><a href="mailto:hello@yourdomain.com">hello@yourdomain.com</a></div></div>
+    <div><span class="label caps">Enquiries &amp; commissions</span><div class="big"><a href="mailto:sam@sbalzer.com">sam@sbalzer.com</a></div></div>
     <div><span class="label caps">Instagram</span><div class="big"><a href="https://instagram.com/" target="_blank" rel="noopener">@yourhandle</a></div></div>
   </div>
 </section>
@@ -174,6 +195,8 @@
    - Add one line below. Order here = order on the site.
    - Leave year / medium / size as "" to hide them.
    - `cat` must match one of the CATEGORIES.
+   - Add  available:"$1,200"  (or "Price on request") to show it under Available work.
+     Remove it (or set it to "") once the piece sells.
    ============================================================ */
 const ARTIST = "Sam Balzer";
 const CATEGORIES = ["Figurative", "Landscape", "Drawing"];
@@ -182,14 +205,14 @@ const PORTRAIT = "images/2026-portrait.jpg";
 const WORKS = [
   { title:"Skeletons and figures", year:"2024", medium:"", size:"", cat:"Figurative", src:"images/2024-skeletons-and-figures.jpg" },
   { title:"Alpine peak", year:"2023", medium:"", size:"", cat:"Landscape", src:"images/2023-alpine-peak.jpg" },
-  { title:"Skeleton reading", year:"2026", medium:"", size:"", cat:"Figurative", src:"images/2026-skeleton-reading.jpg" },
+  { title:"Skeleton reading", year:"2026", medium:"", size:"", cat:"Figurative", available:"Price on request", src:"images/2026-skeleton-reading.jpg" },
   { title:"Moored boats", year:"2023", medium:"", size:"", cat:"Landscape", src:"images/2023-moored-boats.jpg" },
   { title:"Figure in landscape", year:"2024", medium:"", size:"", cat:"Figurative", src:"images/2024-figure-in-landscape.jpg" },
   { title:"Surf on the rocks", year:"2022", medium:"", size:"", cat:"Landscape", src:"images/2022-surf-on-the-rocks.jpg" },
   { title:"Skeleton, bedside", year:"2025", medium:"", size:"", cat:"Figurative", src:"images/2025-skeleton-bedside.jpg" },
   { title:"Red tractor", year:"2022", medium:"", size:"", cat:"Landscape", src:"images/2022-red-tractor.jpg" },
   { title:"Night battle", year:"2023", medium:"", size:"", cat:"Figurative", src:"images/2023-night-battle.jpg" },
-  { title:"Braided river", year:"2023", medium:"", size:"", cat:"Landscape", src:"images/2023-braided-river.jpg" },
+  { title:"Braided river", year:"2023", medium:"", size:"", cat:"Landscape", available:"Price on request", src:"images/2023-braided-river.jpg" },
   { title:"Skeleton on yellow", year:"2024", medium:"", size:"", cat:"Figurative", src:"images/2024-skeleton-on-yellow.jpg" },
   { title:"Bach on the beach", year:"2022", medium:"", size:"", cat:"Landscape", src:"images/2022-bach-on-the-beach.jpg" },
   { title:"James doomscrolling", year:"2023", medium:"", size:"", cat:"Figurative", src:"images/2023-james-doomscrolling.jpg" },
@@ -198,7 +221,7 @@ const WORKS = [
   { title:"Rocks and surf", year:"2022", medium:"", size:"", cat:"Landscape", src:"images/2022-rocks-and-surf.jpg" },
   { title:"Portrait", year:"2026", medium:"", size:"", cat:"Figurative", src:"images/2026-portrait.jpg" },
   { title:"Blue tractor", year:"2022", medium:"", size:"", cat:"Landscape", src:"images/2022-blue-tractor.jpg" },
-  { title:"Greyhound", year:"2023", medium:"", size:"", cat:"Figurative", src:"images/2023-greyhound.jpg" },
+  { title:"Greyhound", year:"2023", medium:"", size:"", cat:"Figurative", available:"Price on request", src:"images/2023-greyhound.jpg" },
   { title:"Lake view", year:"2022", medium:"", size:"", cat:"Landscape", src:"images/2022-lake-view.jpg" },
   { title:"Melting smile", year:"2024", medium:"", size:"", cat:"Figurative", src:"images/2024-melting-smile.jpg" },
   { title:"Rusted tractor", year:"2022", medium:"", size:"", cat:"Landscape", src:"images/2022-rusted-tractor.jpg" },
@@ -235,6 +258,18 @@ document.getElementById("heroImg").src=HERO.src||placeholder(42,0.6);
 document.getElementById("heroTitle").textContent=HERO.title;
 document.getElementById("heroSub").textContent=HERO.sub;
 document.getElementById("portrait").src=PORTRAIT||placeholder(7,1.25);
+
+const EMAIL="sam@sbalzer.com";
+const avail=document.getElementById("avail");
+WORKS.forEach((w,i)=>{ if(!w.available) return;
+  const el=document.createElement("figure"); el.className="work reveal";
+  const subj=encodeURIComponent("Enquiry: "+line(w.title,w.year));
+  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(w.title,w.year)}" src="${thumbOf(w,i)}"></div>
+    <figcaption class="meta"><span><b>${w.title}</b>${w.year?", "+w.year:""}${line(w.medium,w.size)?"<br>"+line(w.medium,w.size):""}</span><span>${w.available}</span></figcaption>
+    <a class="enq caps" href="mailto:${EMAIL}?subject=${subj}" onclick="event.stopPropagation()">Enquire</a>`;
+  el.querySelector(".frame").onclick=()=>openLb(i);
+  avail.appendChild(el);
+});
 
 const grid=document.getElementById("grid");
 WORKS.forEach((w,i)=>{
