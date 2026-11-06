@@ -66,8 +66,8 @@
   #available:has(.avail:empty){display:none}
 
   #film:has(#filmGrid:empty){display:none}
-  .film-group+.film-group{margin-top:clamp(40px,5vw,72px)}
-  .film-head{display:flex;justify-content:space-between;margin-bottom:16px}
+  .film-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:clamp(14px,2vw,28px);align-items:start}
+  .film-grid .work{margin:0}
   /* Grid */
   .grid{columns:3 280px;column-gap:clamp(14px,2vw,28px)}
   .work{break-inside:avoid;margin-bottom:clamp(14px,2vw,28px);cursor:zoom-in}
@@ -155,7 +155,7 @@
     <span class="caps">Film</span>
     <a class="caps" href="https://www.imdb.com/name/nm5470835/" target="_blank" rel="noopener" style="border-bottom:1px solid var(--ink)">Full credits on IMDb ↗</a>
   </div>
-  <div id="filmGrid"></div>
+  <div class="film-grid" id="filmGrid"></div>
 </section>
 
 <section id="contact">
@@ -198,28 +198,29 @@ const CATEGORIES = ["Figurative", "Landscape", "Drawing"];
 const HERO = { src: "images/2024-skeletons-and-figures.jpg", title: "A Bone to Pick", sub: "Oil — 2024" };
 // Film work: shown in the Film section (same image + thumbs/ rule as WORKS)
 // Film work. Pieces are grouped by `show` (newest show first). Leave show "" for other projects.
+// Film work, shown in this order (newest show first).
 const FILM = [
   { show:"Resident Evil", title:"Creature concept", year:"2026", role:"Concept art, Wētā FX", src:"images/film/revl-bryanphase02-sb260429-v02-0001.jpg" },
-  { show:"A Minecraft Movie", title:"The Great Hog", year:"2025", role:"Concept art, Wētā FX", src:"images/film/greathog-006.jpg" },
-  { show:"Captain America: Brave New World", title:"Smouldering Hulk", year:"2025", role:"Concept art, Wētā FX", src:"images/film/smoulderinghulk-a-001.jpg" },
-  { show:"", title:"Totem", year:"2026", role:"Concept art, Wētā FX", src:"images/film/totem-final.jpg" },
-  { show:"A Minecraft Movie", title:"Ghasts", year:"2025", role:"Concept art, Wētā FX", src:"images/film/ghasts-002.jpg" },
-  { show:"Shadow in the Cloud", title:"Creature concept", year:"2020", role:"Concept art, Wētā FX", src:"images/film/untitled5.jpg" },
   { show:"Resident Evil", title:"Creature concept", year:"2026", role:"Concept art, Wētā FX", src:"images/film/revl-facemush-sb-260121-v04-0002.jpg" },
-  { show:"Deadpool & Wolverine", title:"Zombie concepts", year:"2024", role:"Concept art, Wētā FX", src:"images/film/deadpoolconcepts-a-0002.jpg" },
-  { show:"Black Adam", title:"Cyclone FX concept", year:"2022", role:"Concept art, Wētā FX", src:"images/film/cyclonefxconcepts-blk-0002.jpg" },
+  { show:"A Minecraft Movie", title:"The Great Hog", year:"2025", role:"Concept art, Wētā FX", src:"images/film/greathog-006.jpg" },
+  { show:"A Minecraft Movie", title:"Ghasts", year:"2025", role:"Concept art, Wētā FX", src:"images/film/ghasts-002.jpg" },
   { show:"A Minecraft Movie", title:"Bee", year:"2025", role:"Concept art, Wētā FX", src:"images/film/bee-001.jpg" },
   { show:"A Minecraft Movie", title:"The Great Hog", year:"2025", role:"Concept art, Wētā FX", src:"images/film/greathog-004.jpg" },
-  { show:"Damsel", title:"Dragon, scale study", year:"2024", role:"Concept art, Wētā FX", src:"images/film/damsel-b-0007.jpg" },
-  { show:"", title:"Creature concept", year:"2023", role:"Concept art, Wētā FX", src:"images/film/kanjicreature-bid-0007.jpg" },
-  { show:"", title:"Unicorn", year:"2022", role:"Concept art, Wētā FX", src:"images/film/unicorn-a-0004.jpg" },
   { show:"A Minecraft Movie", title:"Piglins", year:"2025", role:"Concept art, Wētā FX", src:"images/film/piglinscombined-001.jpg" },
-  { show:"Deadpool & Wolverine", title:"Zombie concepts", year:"2024", role:"Concept art, Wētā FX", src:"images/film/deadpoolconcepts-a-0003.jpg" },
-  { show:"Damsel", title:"Dragon, pose study", year:"2024", role:"Concept art, Wētā FX", src:"images/film/damsel-b-0008.jpg" },
-  { show:"", title:"Creature concept", year:"2023", role:"Concept art, Wētā FX", src:"images/film/kanjicreature-bid-0004.jpg" },
   { show:"A Minecraft Movie", title:"Piglins", year:"2025", role:"Concept art, Wētā FX", src:"images/film/piglinscombined-002.jpg" },
   { show:"A Minecraft Movie", title:"Squealers", year:"2025", role:"Concept art, Wētā FX", src:"images/film/squealers-001.jpg" },
   { show:"A Minecraft Movie", title:"Piglins", year:"2025", role:"Concept art, Wētā FX", src:"images/film/piglinscombined-003.jpg" },
+  { show:"Captain America: Brave New World", title:"Smouldering Hulk", year:"2025", role:"Concept art, Wētā FX", src:"images/film/smoulderinghulk-a-001.jpg" },
+  { show:"Deadpool & Wolverine", title:"Zombie concepts", year:"2024", role:"Concept art, Wētā FX", src:"images/film/deadpoolconcepts-a-0002.jpg" },
+  { show:"Deadpool & Wolverine", title:"Zombie concepts", year:"2024", role:"Concept art, Wētā FX", src:"images/film/deadpoolconcepts-a-0003.jpg" },
+  { show:"", title:"Totem", year:"2026", role:"Concept art, Wētā FX", src:"images/film/totem-final.jpg" },
+  { show:"", title:"Creature concept", year:"2023", role:"Concept art, Wētā FX", src:"images/film/kanjicreature-bid-0007.jpg" },
+  { show:"", title:"Creature concept", year:"2023", role:"Concept art, Wētā FX", src:"images/film/kanjicreature-bid-0004.jpg" },
+  { show:"Damsel", title:"Dragon, scale study", year:"2024", role:"Concept art, Wētā FX", src:"images/film/damsel-b-0007.jpg" },
+  { show:"Damsel", title:"Dragon, pose study", year:"2024", role:"Concept art, Wētā FX", src:"images/film/damsel-b-0008.jpg" },
+  { show:"Black Adam", title:"Cyclone FX concept", year:"2022", role:"Concept art, Wētā FX", src:"images/film/cyclonefxconcepts-blk-0002.jpg" },
+  { show:"Shadow in the Cloud", title:"Creature concept", year:"2020", role:"Concept art, Wētā FX", src:"images/film/untitled5.jpg" },
+  { show:"", title:"Unicorn", year:"2022", role:"Concept art, Wētā FX", src:"images/film/unicorn-a-0004.jpg" },
 ];
 const PORTRAIT = "images/2026-portrait.jpg";
 const WORKS = [
@@ -290,19 +291,10 @@ WORKS.forEach((w,i)=>{ if(!w.available) return;
 });
 
 const filmGrid=document.getElementById("filmGrid");
-(()=>{const groups=new Map();
- FILM.forEach((f,i)=>{const k=f.show||"Other projects";if(!groups.has(k))groups.set(k,[]);groups.get(k).push(i);});
- const yr=k=>Math.max(...groups.get(k).map(i=>+FILM[i].year||0));
- const keys=[...groups.keys()].sort((x,y)=>(x==="Other projects")-(y==="Other projects")||yr(y)-yr(x));
- keys.forEach(k=>{const idx=groups.get(k).sort((p,q)=>(+FILM[q].year||0)-(+FILM[p].year||0));
-  const sec=document.createElement("div");sec.className="film-group";
-  sec.innerHTML=`<div class="film-head"><span class="caps">${k}</span><span class="caps" style="color:var(--muted)">${k==="Other projects"?"":yr(k)}</span></div><div class="grid"></div>`;
-  const g=sec.querySelector(".grid");
-  idx.forEach(i=>{const f=FILM[i];const el=document.createElement("figure");el.className="work reveal";
-   el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(f.show,f.title)}" src="${f.src.replace(/^images\//,"images/thumbs/")}"></div>
-    <figcaption class="meta"><span><b>${f.title}</b>${f.year?", "+f.year:""}</span><span>${f.role||""}</span></figcaption>`;
-   el.onclick=()=>openFilm(i);g.appendChild(el);});
-  filmGrid.appendChild(sec);});})();
+FILM.forEach((f,i)=>{const el=document.createElement("figure");el.className="work reveal";
+  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(f.show,f.title)}" src="${f.src.replace(/^images\//,"images/thumbs/")}"></div>
+    <figcaption class="meta"><span><b>${f.show?f.show+" — ":""}${f.title}</b>${f.year?", "+f.year:""}</span><span>${f.role||""}</span></figcaption>`;
+  el.onclick=()=>openFilm(i); filmGrid.appendChild(el);});
 
 const grid=document.getElementById("grid");
 WORKS.forEach((w,i)=>{
