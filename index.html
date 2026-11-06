@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam Balzer</title>
+<meta name="description" content="Paintings by Sam Balzer — figurative work and landscapes from Aotearoa New Zealand.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Supreme (Fontshare) loads on the live site; Outfit is the preview fallback -->
+<link href="https://api.fontshare.com/v2/css?f[]=supreme@300,400,500,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f2f0eb; --ink:#141414; --muted:#8a8780; --line:#dedbd3;
+    --pad:clamp(18px,3.2vw,44px);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:"Supreme","Outfit",system-ui,sans-serif;font-weight:400;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  img{display:block;width:100%;height:auto}
+  .caps{text-transform:uppercase;letter-spacing:.12em;font-size:11.5px;font-weight:500}
+
+  /* Header */
+  header{position:fixed;inset:0 0 auto 0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:22px var(--pad);transition:background .3s,color .3s}
+  header.solid{background:rgba(242,240,235,.92);backdrop-filter:blur(8px);color:var(--ink)}
+  header.over{color:#fff}
+  .logo{font-weight:500;letter-spacing:.18em;text-transform:uppercase;font-size:13px}
+  nav ul{display:flex;gap:28px;list-style:none}
+  nav a{opacity:.85;transition:opacity .2s}
+  nav a:hover{opacity:1}
+  .burger{display:none;background:none;border:0;color:inherit;cursor:pointer}
+  @media (max-width:720px){
+    .burger{display:block}
+    nav ul{position:fixed;inset:0;background:var(--bg);color:var(--ink);flex-direction:column;justify-content:center;align-items:center;gap:30px;font-size:15px;opacity:0;pointer-events:none;transition:opacity .25s}
+    nav.open ul{opacity:1;pointer-events:auto}
+    nav.open + .burger, .burger.x{color:var(--ink);position:relative;z-index:30}
+  }
+
+  /* Hero */
+  .hero{position:relative;height:100svh;min-height:520px;overflow:hidden;background:#222}
+  .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.35),transparent 40%)}
+  .hero .cap{position:absolute;left:var(--pad);bottom:28px;z-index:2;color:#fff}
+  .hero .cap h1{font-weight:400;font-size:clamp(28px,4.6vw,62px);line-height:1;letter-spacing:-.02em;margin-bottom:10px}
+  .hero .scroll{position:absolute;right:var(--pad);bottom:28px;z-index:2;color:#fff}
+
+  /* Sections */
+  section{padding:clamp(70px,10vw,140px) var(--pad) 0}
+  .sec-head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:30px;gap:20px;flex-wrap:wrap}
+  .filters{display:flex;gap:22px;flex-wrap:wrap}
+  .filters button{background:none;border:0;font:inherit;color:var(--muted);cursor:pointer;padding:2px 0;border-bottom:1px solid transparent;text-transform:uppercase;letter-spacing:.12em;font-size:11.5px;font-weight:500}
+  .filters button.on{color:var(--ink);border-color:var(--ink)}
+
+  /* Grid */
+  .grid{columns:3 280px;column-gap:clamp(14px,2vw,28px)}
+  .work{break-inside:avoid;margin-bottom:clamp(14px,2vw,28px);cursor:zoom-in}
+  .work .frame{overflow:hidden;background:#e9e7e2}
+  .work img{transition:transform .6s cubic-bezier(.2,.7,.2,1),opacity .4s}
+  .work:hover img{transform:scale(1.025)}
+  .work .meta{display:flex;justify-content:space-between;gap:12px;padding-top:9px;font-size:12.5px;color:var(--muted)}
+  .work .meta b{font-weight:500;color:var(--ink)}
+  .work.hide{display:none}
+
+  /* About */
+  .about{display:grid;grid-template-columns:1fr 1.2fr;gap:clamp(30px,6vw,90px);align-items:start}
+  .about p{font-size:clamp(17px,1.6vw,21px);line-height:1.5;font-weight:300;max-width:38em}
+  .about p + p{margin-top:1em}
+  .cv{margin-top:36px;display:grid;grid-template-columns:70px 1fr;row-gap:8px;font-size:13.5px}
+  .cv span:nth-child(odd){color:var(--muted)}
+  @media (max-width:800px){.about{grid-template-columns:1fr}}
+
+  /* Contact */
+  .contact{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:30px}
+  .contact .big{font-size:clamp(24px,3.4vw,44px);font-weight:300;letter-spacing:-.01em;line-height:1.15;word-break:break-word}
+  .contact .big a{border-bottom:1px solid var(--line)}
+  .contact .big a:hover{border-color:var(--ink)}
+  .contact .label{color:var(--muted);margin-bottom:10px;display:block}
+
+  footer{margin-top:clamp(80px,10vw,140px);padding:24px var(--pad);border-top:1px solid var(--line);display:flex;justify-content:space-between;color:var(--muted)}
+
+  /* Lightbox */
+  .lb{position:fixed;inset:0;z-index:50;background:rgba(242,240,235,.98);display:grid;grid-template-rows:auto 1fr auto;opacity:0;pointer-events:none;transition:opacity .25s}
+  .lb.open{opacity:1;pointer-events:auto}
+  .lb .top{display:flex;justify-content:space-between;padding:22px var(--pad)}
+  .lb .stage{display:flex;align-items:center;justify-content:center;padding:0 var(--pad);min-height:0}
+  .lb .stage img{max-height:100%;max-width:100%;width:auto;object-fit:contain}
+  .lb .bot{display:flex;justify-content:space-between;align-items:center;padding:20px var(--pad) 26px;gap:20px}
+  .lb button{background:none;border:0;font:inherit;cursor:pointer;color:var(--ink)}
+  .lb .info b{font-weight:500}
+  .lb .info span{color:var(--muted)}
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .8s,transform .8s}
+  .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<header id="hdr" class="over">
+  <a href="#top" class="logo">Sam Balzer</a>
+  <nav id="nav">
+    <ul class="caps">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a></li>
+    </ul>
+  </nav>
+  <button class="burger caps" id="burger" aria-label="Menu">Menu</button>
+</header>
+
+<div class="hero" id="top">
+  <img id="heroImg" alt="Featured artwork">
+  <div class="cap">
+    <h1 id="heroTitle">Featured work title</h1>
+    <div class="caps" id="heroSub">Exhibition / Gallery, City — 2026</div>
+  </div>
+  <a href="#work" class="scroll caps">Scroll ↓</a>
+</div>
+
+<section id="work">
+  <div class="sec-head">
+    <span class="caps">Selected work</span>
+    <div class="filters" id="filters"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<section id="about">
+  <div class="sec-head"><span class="caps">About</span></div>
+  <div class="about">
+    <div class="frame reveal"><img id="portrait" alt="Painting by Sam Balzer"></div>
+    <div class="reveal">
+      <p>Sam Balzer is a painter based in Aotearoa New Zealand, working between figurative studio paintings and landscapes made on location. [Replace with a short statement about your practice — what you make, what you're drawn to, and how you work.]</p>
+      <p>A second, optional paragraph for background: where you trained, recent projects, or the ideas running through your current body of work.</p>
+      <div class="cv">
+        <span>2026</span><span>Solo exhibition title — Gallery, City</span>
+        <span>2025</span><span>Mural commission — Location</span>
+        <span>2025</span><span>Group show title — Gallery, City</span>
+        <span>2024</span><span>Residency or award — Organisation</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="sec-head"><span class="caps">Contact</span></div>
+  <div class="contact">
+    <div><span class="label caps">Enquiries &amp; commissions</span><div class="big"><a href="mailto:hello@yourdomain.com">hello@yourdomain.com</a></div></div>
+    <div><span class="label caps">Instagram</span><div class="big"><a href="https://instagram.com/" target="_blank" rel="noopener">@yourhandle</a></div></div>
+  </div>
+</section>
+
+<footer class="caps">
+  <span>© <span id="yr"></span> Sam Balzer</span>
+  <a href="#top">Back to top ↑</a>
+</footer>
+
+<div class="lb" id="lb" aria-hidden="true">
+  <div class="top caps"><span id="lbCount"></span><button class="caps" id="lbClose">Close ✕</button></div>
+  <div class="stage"><img id="lbImg" alt=""></div>
+  <div class="bot">
+    <button class="caps" id="lbPrev">← Prev</button>
+    <div class="info" id="lbInfo"></div>
+    <button class="caps" id="lbNext">Next →</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   EDIT YOUR WORK HERE  (see README.md for the full how-to)
+   - Put the full image in  images/            e.g. images/2026-new-work.jpg
+   - Put a small copy in    images/thumbs/     with the SAME file name
+   - Add one line below. Order here = order on the site.
+   - Leave year / medium / size as "" to hide them.
+   - `cat` must match one of the CATEGORIES.
+   ============================================================ */
+const ARTIST = "Sam Balzer";
+const CATEGORIES = ["Figurative", "Landscape", "Drawing"];
+const HERO = { src: "images/2024-skeletons-and-figures.jpg", title: "Skeletons and figures", sub: "2024" };
+const PORTRAIT = "images/2026-portrait.jpg";
+const WORKS = [
+  { title:"Skeletons and figures", year:"2024", medium:"", size:"", cat:"Figurative", src:"images/2024-skeletons-and-figures.jpg" },
+  { title:"Alpine peak", year:"2023", medium:"", size:"", cat:"Landscape", src:"images/2023-alpine-peak.jpg" },
+  { title:"Skeleton reading", year:"2026", medium:"", size:"", cat:"Figurative", src:"images/2026-skeleton-reading.jpg" },
+  { title:"Moored boats", year:"2023", medium:"", size:"", cat:"Landscape", src:"images/2023-moored-boats.jpg" },
+  { title:"Figure in landscape", year:"2024", medium:"", size:"", cat:"Figurative", src:"images/2024-figure-in-landscape.jpg" },
+  { title:"Surf on the rocks", year:"2022", medium:"", size:"", cat:"Landscape", src:"images/2022-surf-on-the-rocks.jpg" },
+  { title:"Skeleton, bedside", year:"2025", medium:"", size:"", cat:"Figurative", src:"images/2025-skeleton-bedside.jpg" },
+  { title:"Red tractor", year:"2022", medium:"", size:"", cat:"Landscape", src:"images/2022-red-tractor.jpg" },
+  { title:"Night battle", year:"2023", medium:"", size:"", cat:"Figurative", src:"images/2023-night-battle.jpg" },
+  { title:"Braided river", year:"2023", medium:"", size:"", cat:"Landscape", src:"images/2023-braided-river.jpg" },
+  { title:"Skeleton on yellow", year:"2024", medium:"", size:"", cat:"Figurative", src:"images/2024-skeleton-on-yellow.jpg" },
+  { title:"Bach on the beach", year:"2022", medium:"", size:"", cat:"Landscape", src:"images/2022-bach-on-the-beach.jpg" },
+  { title:"James doomscrolling", year:"2023", medium:"", size:"", cat:"Figurative", src:"images/2023-james-doomscrolling.jpg" },
+  { title:"Mountain valley", year:"2023", medium:"", size:"", cat:"Landscape", src:"images/2023-mountain-valley.jpg" },
+  { title:"Glowing figure", year:"2024", medium:"", size:"", cat:"Figurative", src:"images/2024-glowing-figure.jpg" },
+  { title:"Rocks and surf", year:"2022", medium:"", size:"", cat:"Landscape", src:"images/2022-rocks-and-surf.jpg" },
+  { title:"Portrait", year:"2026", medium:"", size:"", cat:"Figurative", src:"images/2026-portrait.jpg" },
+  { title:"Blue tractor", year:"2022", medium:"", size:"", cat:"Landscape", src:"images/2022-blue-tractor.jpg" },
+  { title:"Greyhound", year:"2023", medium:"", size:"", cat:"Figurative", src:"images/2023-greyhound.jpg" },
+  { title:"Lake view", year:"2022", medium:"", size:"", cat:"Landscape", src:"images/2022-lake-view.jpg" },
+  { title:"Melting smile", year:"2024", medium:"", size:"", cat:"Figurative", src:"images/2024-melting-smile.jpg" },
+  { title:"Rusted tractor", year:"2022", medium:"", size:"", cat:"Landscape", src:"images/2022-rusted-tractor.jpg" },
+  { title:"Skeleton with lights", year:"2022", medium:"", size:"", cat:"Figurative", src:"images/2022-skeleton-with-lights.jpg" },
+  { title:"Mountain road", year:"2022", medium:"", size:"", cat:"Landscape", src:"images/2022-mountain-road.jpg" },
+  { title:"Girl on a railing", year:"2022", medium:"", size:"", cat:"Figurative", src:"images/2022-girl-on-a-railing.jpg" },
+  { title:"Sheep and stones", year:"2023", medium:"", size:"", cat:"Landscape", src:"images/2023-sheep-and-stones.jpg" },
+  { title:"Coffee machine", year:"", medium:"", size:"", cat:"Drawing", src:"images/coffee-machine.jpg" },
+  { title:"Wave study, on location", year:"", medium:"", size:"", cat:"Landscape", src:"images/wave-study-on-location.jpg" },
+  { title:"Waterfall study, on location", year:"", medium:"", size:"", cat:"Landscape", src:"images/waterfall-study-on-location.jpg" },
+];
+
+/* ---------- placeholder artwork (used until you add real images) ---------- */
+function rng(seed){return()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646}}
+const PALS=[["#d9d3c7","#2b2a28","#b5563c","#8c9a8f"],["#e8e2d6","#1d2b34","#c9a24a","#6d7f8c"],["#cfc8bc","#3a2f2a","#7a4b3a","#e9e4da"],["#ebe7df","#232323","#9b2f2a","#a9b3a6"]];
+function placeholder(i,ratio){
+  const r=rng(i*977+13),p=PALS[i%PALS.length],w=600,h=Math.round(w*ratio);
+  let s=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" fill="${p[0]}"/>`;
+  for(let k=0;k<5+Math.floor(r()*5);k++){
+    const c=p[1+Math.floor(r()*3)],o=(.55+r()*.45).toFixed(2),t=r();
+    if(t<.4) s+=`<circle cx="${r()*w}" cy="${r()*h}" r="${40+r()*w*.32}" fill="${c}" opacity="${o}"/>`;
+    else if(t<.75) s+=`<rect x="${r()*w*.8}" y="${r()*h*.8}" width="${40+r()*w*.5}" height="${40+r()*h*.45}" fill="${c}" opacity="${o}" transform="rotate(${(r()-.5)*30} ${w/2} ${h/2})"/>`;
+    else s+=`<path d="M0 ${r()*h} Q ${w/2} ${r()*h} ${w} ${r()*h}" stroke="${c}" stroke-width="${6+r()*30}" fill="none" opacity="${o}"/>`;
+  }
+  return "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(s+"</svg>");
+}
+const imgOf=(w,i)=>w.src||placeholder(i+1,w.ratio||1.25);
+const thumbOf=(w,i)=>w.src?w.src.replace(/^images\//,"images/thumbs/"):imgOf(w,i);
+const line=(...a)=>a.filter(Boolean).join(", ");
+
+/* ---------- render ---------- */
+document.getElementById("yr").textContent=new Date().getFullYear();
+document.getElementById("heroImg").src=HERO.src||placeholder(42,0.6);
+document.getElementById("heroTitle").textContent=HERO.title;
+document.getElementById("heroSub").textContent=HERO.sub;
+document.getElementById("portrait").src=PORTRAIT||placeholder(7,1.25);
+
+const grid=document.getElementById("grid");
+WORKS.forEach((w,i)=>{
+  const el=document.createElement("figure");
+  el.className="work reveal";el.dataset.cat=w.cat;el.dataset.i=i;
+  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(w.title,w.year)}" src="${thumbOf(w,i)}"></div>
+    <figcaption class="meta"><span><b>${w.title}</b>${w.year?", "+w.year:""}</span><span>${w.medium||""}</span></figcaption>`;
+  el.onclick=()=>openLb(i);
+  grid.appendChild(el);
+});
+
+const filters=document.getElementById("filters");
+["All",...CATEGORIES].forEach((c,k)=>{
+  const b=document.createElement("button");b.textContent=c;if(!k)b.className="on";
+  b.onclick=()=>{filters.querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on");
+    grid.querySelectorAll(".work").forEach(el=>el.classList.toggle("hide",c!=="All"&&el.dataset.cat!==c));};
+  filters.appendChild(b);
+});
+
+/* ---------- lightbox ---------- */
+const lb=document.getElementById("lb");let cur=0;
+const visible=()=>[...grid.querySelectorAll(".work:not(.hide)")].map(e=>+e.dataset.i);
+function show(i){const w=WORKS[i];cur=i;const v=visible();
+  document.getElementById("lbImg").src=imgOf(w,i);document.getElementById("lbImg").alt=w.title;
+  document.getElementById("lbInfo").innerHTML=`<b>${w.title}</b>${w.year?", "+w.year:""} ${line(w.medium,w.size)?"<span>— "+line(w.medium,w.size)+"</span>":""}`;
+  document.getElementById("lbCount").textContent=`${v.indexOf(i)+1} / ${v.length}`;}
+function openLb(i){show(i);lb.classList.add("open");lb.setAttribute("aria-hidden","false");document.body.style.overflow="hidden"}
+function closeLb(){lb.classList.remove("open");lb.setAttribute("aria-hidden","true");document.body.style.overflow=""}
+function step(d){const v=visible();show(v[(v.indexOf(cur)+d+v.length)%v.length])}
+document.getElementById("lbClose").onclick=closeLb;
+document.getElementById("lbPrev").onclick=()=>step(-1);
+document.getElementById("lbNext").onclick=()=>step(1);
+document.addEventListener("keydown",e=>{if(!lb.classList.contains("open"))return;
+  if(e.key==="Escape")closeLb();if(e.key==="ArrowRight")step(1);if(e.key==="ArrowLeft")step(-1);});
+
+/* ---------- header + menu + reveal ---------- */
+const hdr=document.getElementById("hdr"),nav=document.getElementById("nav"),burger=document.getElementById("burger");
+function onScroll(){const past=scrollY>innerHeight-80;hdr.classList.toggle("solid",past);hdr.classList.toggle("over",!past)}
+addEventListener("scroll",onScroll,{passive:true});onScroll();
+burger.onclick=()=>{const o=nav.classList.toggle("open");burger.classList.toggle("x",o);burger.textContent=o?"Close":"Menu"};
+nav.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{nav.classList.remove("open");burger.classList.remove("x");burger.textContent="Menu"}));
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.08});
+document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
