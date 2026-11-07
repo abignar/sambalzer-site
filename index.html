@@ -23,13 +23,14 @@
   .caps{text-transform:uppercase;letter-spacing:.12em;font-size:11.5px;font-weight:500}
 
   /* Header */
-  header{position:fixed;inset:0 0 auto 0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:22px var(--pad);transition:background .3s,color .3s}
-  header.solid{background:rgba(242,240,235,.92);backdrop-filter:blur(8px);color:var(--ink)}
+  header{position:fixed;inset:0 0 auto 0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:22px var(--pad);transition:background .3s,color .3s,padding .3s}
+  header.solid{background:var(--bg);color:var(--ink);padding-top:10px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+  header.solid .logo img{height:34px}
   header.over{color:#fff}
   .logo{display:block;line-height:0}
   .logo img{height:52px;width:auto;transition:filter .3s}
   header.over .logo img{filter:invert(1)}
-  @media (max-width:720px){.logo img{height:40px}}
+  @media (max-width:720px){.logo img{height:40px} header.solid .logo img{height:28px}}
   nav ul{display:flex;gap:28px;list-style:none}
   nav a{opacity:.85;transition:opacity .2s}
   nav a:hover{opacity:1}
@@ -324,14 +325,20 @@ function show(i){const w=WORKS[i];cur=i;const v=visible();
   document.getElementById("lbInfo").innerHTML=`<b>${w.title}</b>${w.year?", "+w.year:""} ${line(w.medium,w.size)?"<span>— "+line(w.medium,w.size)+"</span>":""}`;
   document.getElementById("lbCount").textContent=(v.indexOf(i)<0?"":`${v.indexOf(i)+1} / ${v.length}`);}
 function openLb(i){show(i);lb.classList.add("open");lb.setAttribute("aria-hidden","false");document.body.style.overflow="hidden"}
+let filmCur=0;
+function stepFilm(d){openFilm((filmCur+d+FILM.length)%FILM.length)}
 function openFilm(i){const f=FILM[i];document.getElementById("lbImg").src=f.src;document.getElementById("lbImg").alt=f.title;
   document.getElementById("lbInfo").innerHTML=`<b>${line(f.show,f.title).replace(", "," — ")}</b>${f.year?", "+f.year:""} ${f.role?"<span>— "+f.role+"</span>":""}`;
-  document.getElementById("lbCount").textContent="Film";cur=-1;lb.classList.add("open");document.body.style.overflow="hidden"}
+  document.getElementById("lbCount").textContent=`${i+1} / ${FILM.length}`;cur=-1;filmCur=i;lb.classList.add("open");document.body.style.overflow="hidden"}
 function closeLb(){lb.classList.remove("open");lb.setAttribute("aria-hidden","true");document.body.style.overflow=""}
-function step(d){if(cur<0)return;const v=visible();show(v[(v.indexOf(cur)+d+v.length)%v.length])}
+function step(d){if(cur<0)return stepFilm(d);const v=visible();show(v[(v.indexOf(cur)+d+v.length)%v.length])}
 document.getElementById("lbClose").onclick=closeLb;
 document.getElementById("lbPrev").onclick=()=>step(-1);
 document.getElementById("lbNext").onclick=()=>step(1);
+(()=>{let x0=null,y0=null;const st=lb.querySelector(".stage");
+ st.addEventListener("touchstart",e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+ st.addEventListener("touchend",e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;
+  if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){step(dx<0?1:-1)}x0=null},{passive:true});})();
 document.addEventListener("keydown",e=>{if(!lb.classList.contains("open"))return;
   if(e.key==="Escape")closeLb();if(e.key==="ArrowRight")step(1);if(e.key==="ArrowLeft")step(-1);});
 
