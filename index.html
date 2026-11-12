@@ -239,7 +239,7 @@ const PORTRAIT = "images/2026-portrait.jpg";
 const WORKS = [
   { title:"A Bone to Pick", year:"2024", medium:"Oil", size:"", cat:"Figurative", src:"images/2024-skeletons-and-figures.jpg" },
   { title:"Alpine peak", year:"2023", medium:"", size:"", cat:"Landscape", src:"images/2023-alpine-peak.jpg" },
-  { title:"Morning Brew", year:"2026", medium:"Oil on linen, framed", size:"75 × 60 cm", cat:"Figurative", available:"$2,895 NZD", src:"images/2026-skeleton-reading.jpg" },
+  { title:"Morning Brew", year:"2026", medium:"Oil on linen, framed", size:"75 × 60 cm", cat:"Figurative", available:"$2,895 NZD", availSrc:"images/2026-morning-brew-framed.jpg", src:"images/2026-skeleton-reading.jpg" },
   { title:"Carolina Reaper", year:"2026", medium:"Oil on wood, framed", size:"13.5 × 13.5 cm", cat:"", availableOnly:true, available:"$185 NZD", src:"images/2026-carolina-reaper.jpg" },
   { title:"Moored boats", year:"2023", medium:"", size:"", cat:"Landscape", src:"images/2023-moored-boats.jpg" },
   { title:"David", year:"2024", medium:"Oil on linen", size:"110 × 110 cm", cat:"Figurative", src:"images/2024-figure-in-landscape.jpg" },
@@ -296,10 +296,11 @@ const avail=document.getElementById("avail");
 WORKS.forEach((w,i)=>{ if(!w.available) return;
   const el=document.createElement("figure"); el.className="work reveal";
   const subj=encodeURIComponent("Enquiry: "+line(w.title,w.year));
-  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(w.title,w.year)}" src="${thumbOf(w,i)}"></div>
+  const aSrc=w.availSrc?w.availSrc.replace(/^images\//,"images/thumbs/"):thumbOf(w,i);
+  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(w.title,w.year)}" src="${aSrc}"></div>
     <figcaption class="meta"><span><b>${w.title}</b>${w.year?", "+w.year:""}${line(w.medium,w.size)?"<br>"+line(w.medium,w.size):""}</span><span>${w.available}</span></figcaption>
     <a class="enq caps" href="mailto:${EMAIL}?subject=${subj}" onclick="event.stopPropagation()">Enquire</a>`;
-  el.querySelector(".frame").onclick=()=>openLb(i);
+  el.querySelector(".frame").onclick=()=>w.availSrc?openList([w.availSrc,imgOf(w,i)],w):openLb(i);
   avail.appendChild(el);
 });
 
@@ -342,10 +343,16 @@ function openFilm(i){const f=FILM[i];document.getElementById("lbImg").src=f.src;
   document.getElementById("lbInfo").innerHTML=`<b>${line(f.show,f.title).replace(", "," — ")}</b>${f.year?", "+f.year:""} ${f.role?"<span>— "+f.role+"</span>":""}`;
   document.getElementById("lbCount").textContent=`${i+1} / ${FILM.length}`;cur=-1;filmCur=i;lb.classList.add("open");document.body.style.overflow="hidden"}
 function closeLb(){lb.classList.remove("open");lb.setAttribute("aria-hidden","true");document.body.style.overflow=""}
-function stepRaw(d){if(cur<0)return stepFilm(d);const v=visible();show(v[(v.indexOf(cur)+d+v.length)%v.length])}
+let listImgs=null,listPos=0,listWork=null;
+function showList(){const w=listWork;lbImgEl.src=listImgs[listPos];lbImgEl.alt=w.title;
+  document.getElementById("lbInfo").innerHTML=`<b>${w.title}</b>${w.year?", "+w.year:""} ${line(w.medium,w.size)?"<span>— "+line(w.medium,w.size)+"</span>":""}`;
+  document.getElementById("lbCount").textContent=`${listPos+1} / ${listImgs.length}`;}
+function openList(imgs,w){listImgs=imgs;listPos=0;listWork=w;cur=-2;lbImgEl.style.transition="none";lbImgEl.style.transform="";lbImgEl.style.opacity="1";
+  showList();imgs.forEach(preload);lb.classList.add("open");document.body.style.overflow="hidden"}
+function stepRaw(d){if(cur===-2){listPos=(listPos+d+listImgs.length)%listImgs.length;return showList()}if(cur<0)return stepFilm(d);const v=visible();show(v[(v.indexOf(cur)+d+v.length)%v.length])}
 const lbImgEl=document.getElementById("lbImg");let sliding=false;
 const preload=src=>{if(src){const im=new Image();im.src=src}};
-function srcAt(d){if(cur<0){const n=(filmCur+d+FILM.length)%FILM.length;return FILM[n].src}
+function srcAt(d){if(cur===-2)return null;if(cur<0){const n=(filmCur+d+FILM.length)%FILM.length;return FILM[n].src}
   const v=visible();if(!v.length)return null;const n=v[(v.indexOf(cur)+d+v.length)%v.length];return imgOf(WORKS[n],n)}
 function preloadAround(){preload(srcAt(1));preload(srcAt(-1))}
 function slideTo(d){if(sliding)return;sliding=true;const W=innerWidth*0.45,T=".18s cubic-bezier(.3,0,.2,1)";
