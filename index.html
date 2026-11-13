@@ -81,6 +81,8 @@
   #film:has(#filmGrid:empty){display:none}
   .film-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:clamp(14px,2vw,28px);align-items:start}
   .film-grid .work{margin:0}
+  .frame{position:relative}
+  .sold-stamp{position:absolute;left:50%;top:50%;width:72%;max-width:380px;transform:translate(-50%,-50%);pointer-events:none;opacity:.97;filter:drop-shadow(0 0 1px rgba(255,255,255,.55)) drop-shadow(0 0 8px rgba(255,255,255,.22))}
   /* Grid */
   .grid{columns:3 280px;column-gap:clamp(14px,2vw,28px)}
   .work{break-inside:avoid;margin-bottom:clamp(14px,2vw,28px);cursor:zoom-in}
@@ -251,7 +253,7 @@ const WORKS = [
   { title:"Bach on the beach", year:"2022", medium:"", size:"", cat:"Landscape", src:"images/2022-bach-on-the-beach.jpg" },
   { title:"Doomscrolling", year:"2022", medium:"Oil on wood", size:"approx. 30 × 40 cm", cat:"Figurative", src:"images/2023-james-doomscrolling.jpg" },
   { title:"Mountain valley", year:"2023", medium:"", size:"", cat:"Landscape", src:"images/2023-mountain-valley.jpg" },
-  { title:"Dead Space", year:"2024", medium:"Oil on wood, framed", size:"", cat:"Figurative", available:"$1,895 NZD", src:"images/2024-glowing-figure.jpg" },
+  { title:"Dead Space", year:"2024", medium:"Oil on wood, framed", size:"", cat:"Figurative", available:"Sold", sold:true, src:"images/2024-glowing-figure.jpg" },
   { title:"Self-portrait", year:"2026", medium:"", size:"", cat:"Figurative", src:"images/2026-portrait.jpg" },
   { title:"Blue tractor", year:"2021", medium:"Oil", size:"", cat:"Landscape", src:"images/2022-blue-tractor.jpg" },
   { title:"Forrest", year:"2023", medium:"", size:"", cat:"Figurative", src:"images/2023-greyhound.jpg" },
@@ -297,9 +299,9 @@ WORKS.forEach((w,i)=>{ if(!w.available) return;
   const el=document.createElement("figure"); el.className="work reveal";
   const subj=encodeURIComponent("Enquiry: "+line(w.title,w.year));
   const aSrc=w.availSrc?w.availSrc.replace(/^images\//,"images/thumbs/"):thumbOf(w,i);
-  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(w.title,w.year)}" src="${aSrc}"></div>
+  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(w.title,w.year)}" src="${aSrc}">${w.sold?'<img class="sold-stamp" src="images/sold-stamp.svg" alt="Sold">':""}</div>
     <figcaption class="meta"><span><b>${w.title}</b>${w.year?", "+w.year:""}${line(w.medium,w.size)?"<br>"+line(w.medium,w.size):""}</span><span>${w.available}</span></figcaption>
-    <a class="enq caps" href="mailto:${EMAIL}?subject=${subj}" onclick="event.stopPropagation()">Enquire</a>`;
+    ${w.sold?"":`<a class="enq caps" href="mailto:${EMAIL}?subject=${subj}" onclick="event.stopPropagation()">Enquire</a>`}`;
   el.querySelector(".frame").onclick=()=>w.availSrc?openList([w.availSrc,imgOf(w,i)],w):openLb(i);
   avail.appendChild(el);
 });
@@ -315,7 +317,7 @@ WORKS.forEach((w,i)=>{
   if(w.availableOnly) return;
   const el=document.createElement("figure");
   el.className="work reveal";el.dataset.cat=w.cat;el.dataset.i=i;
-  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(w.title,w.year)}" src="${thumbOf(w,i)}"></div>
+  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(w.title,w.year)}" src="${thumbOf(w,i)}">${w.sold?'<img class="sold-stamp" src="images/sold-stamp.svg" alt="Sold">':""}</div>
     <figcaption class="meta"><span><b>${w.title}</b>${w.year?", "+w.year:""}</span><span>${w.medium||""}</span></figcaption>`;
   el.onclick=()=>openLb(i);
   grid.appendChild(el);
