@@ -82,7 +82,8 @@
   .film-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:clamp(14px,2vw,28px);align-items:start}
   .film-grid .work{margin:0}
   .frame{position:relative}
-  .sold-stamp{position:absolute;left:50%;top:50%;width:72%;max-width:380px;transform:translate(-50%,-50%);pointer-events:none;opacity:.97;filter:drop-shadow(0 0 1px rgba(255,255,255,.55)) drop-shadow(0 0 8px rgba(255,255,255,.22))}
+  .sold-stamp{position:absolute;left:50%;top:50%;width:66%;max-width:360px;transform:translate(-50%,-50%);pointer-events:none;opacity:.97}
+  .avail .frame img.sold-stamp{box-shadow:none;max-height:none}
   /* Grid */
   .grid{columns:3 280px;column-gap:clamp(14px,2vw,28px)}
   .work{break-inside:avoid;margin-bottom:clamp(14px,2vw,28px);cursor:zoom-in}
@@ -299,7 +300,7 @@ WORKS.forEach((w,i)=>{ if(!w.available) return;
   const el=document.createElement("figure"); el.className="work reveal";
   const subj=encodeURIComponent("Enquiry: "+line(w.title,w.year));
   const aSrc=w.availSrc?w.availSrc.replace(/^images\//,"images/thumbs/"):thumbOf(w,i);
-  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(w.title,w.year)}" src="${aSrc}">${w.sold?'<img class="sold-stamp" src="images/sold-stamp.svg" alt="Sold">':""}</div>
+  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(w.title,w.year)}" src="${aSrc}">${w.sold?'<img class="sold-stamp" src="images/sold-stamp.png" alt="Sold">':""}</div>
     <figcaption class="meta"><span><b>${w.title}</b>${w.year?", "+w.year:""}${line(w.medium,w.size)?"<br>"+line(w.medium,w.size):""}</span><span>${w.available}</span></figcaption>
     ${w.sold?"":`<a class="enq caps" href="mailto:${EMAIL}?subject=${subj}" onclick="event.stopPropagation()">Enquire</a>`}`;
   el.querySelector(".frame").onclick=()=>w.availSrc?openList([w.availSrc,imgOf(w,i)],w):openLb(i);
