@@ -317,7 +317,7 @@ WORKS.forEach((w,i)=>{
   if(w.availableOnly) return;
   const el=document.createElement("figure");
   el.className="work reveal";el.dataset.cat=w.cat;el.dataset.i=i;
-  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(w.title,w.year)}" src="${thumbOf(w,i)}">${w.sold?'<img class="sold-stamp" src="images/sold-stamp.svg" alt="Sold">':""}</div>
+  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(w.title,w.year)}" src="${thumbOf(w,i)}"></div>
     <figcaption class="meta"><span><b>${w.title}</b>${w.year?", "+w.year:""}</span><span>${w.medium||""}</span></figcaption>`;
   el.onclick=()=>openLb(i);
   grid.appendChild(el);
