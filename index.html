@@ -16,19 +16,20 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="images/logo.png">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "Sam Balzer", "url": "https://sbalzer.com/", "image": "https://sbalzer.com/images/2026-portrait.jpg", "jobTitle": "Oil painter and concept artist", "description": "Sam Balzer is a Wellington-based oil painter and film concept artist. Figurative oil paintings, portraits and New Zealand landscapes, plus concept art for Wētā FX on films including A Minecraft Movie and Resident Evil.", "email": "mailto:sam@sbalzer.com", "address": {"@type": "PostalAddress", "addressLocality": "Wellington", "addressCountry": "NZ"}, "knowsAbout": ["Oil painting", "Portrait painting", "Figurative painting", "Plein air landscape painting", "Concept art", "Creature design"], "sameAs": ["https://www.instagram.com/sam_balzer_art/", "https://www.imdb.com/name/nm5470835/"]}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Supreme (Fontshare) loads on the live site; Outfit is the preview fallback -->
-<link href="https://api.fontshare.com/v2/css?f[]=supreme@300,400,500,700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/supreme-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" as="image" href="images/hero-1400.webp" imagesrcset="images/hero-800.webp 800w, images/hero-1400.webp 1400w, images/hero-2000.webp 2000w" imagesizes="100vw" fetchpriority="high">
 <style>
-  :root{
-    --bg:#f2f0eb; --ink:#141414; --muted:#8a8780; --line:#dedbd3;
+  @font-face{font-family:'Supreme';src:url('fonts/supreme-300.woff2') format('woff2');font-weight:300;font-style:normal;font-display:swap}
+  @font-face{font-family:'Supreme';src:url('fonts/supreme-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+  @font-face{font-family:'Supreme';src:url('fonts/supreme-500.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap}
+  @font-face{font-family:'Supreme';src:url('fonts/supreme-700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+    :root{
+    --bg:#f2f0eb; --ink:#141414; --muted:#6b6862; --line:#dedbd3;
     --pad:clamp(18px,3.2vw,44px);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
-  body{background:var(--bg);color:var(--ink);font-family:"Supreme","Outfit",system-ui,sans-serif;font-weight:400;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  body{background:var(--bg);color:var(--ink);font-family:"Supreme",system-ui,sans-serif;font-weight:400;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
   a{color:inherit;text-decoration:none}
   img{display:block;width:100%;height:auto}
   .caps{text-transform:uppercase;letter-spacing:.12em;font-size:11.5px;font-weight:500}
@@ -141,10 +142,10 @@
 </header>
 
 <div class="hero" id="top">
-  <img id="heroImg" alt="Featured artwork">
+  <img id="heroImg" src="images/hero-1400.webp" srcset="images/hero-800.webp 800w, images/hero-1400.webp 1400w, images/hero-2000.webp 2000w" sizes="100vw" width="2000" height="1500" fetchpriority="high" alt="A Bone to Pick, oil painting by Sam Balzer">
   <div class="cap">
-    <h1 id="heroTitle">Featured work title</h1>
-    <div class="caps" id="heroSub">Exhibition / Gallery, City — 2026</div>
+    <h1 id="heroTitle">A Bone to Pick</h1>
+    <div class="caps" id="heroSub">Oil — 2024</div>
   </div>
   <a href="#work" class="scroll caps">Scroll ↓</a>
 </div>
@@ -188,7 +189,7 @@
 
 <div class="lb" id="lb" aria-hidden="true">
   <div class="top caps"><span id="lbCount"></span><button class="caps" id="lbClose">Close ✕</button></div>
-  <div class="stage"><img id="lbImg" alt=""></div>
+  <div class="stage"><img id="lbImg" alt="Enlarged artwork"></div>
   <div class="bot">
     <button class="caps" id="lbPrev">← Prev</button>
     <div class="info" id="lbInfo"></div>
@@ -285,12 +286,15 @@ function placeholder(i,ratio){
   return "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(s+"</svg>");
 }
 const imgOf=(w,i)=>w.src||placeholder(i+1,w.ratio||1.25);
-const thumbOf=(w,i)=>w.src?w.src.replace(/^images\//,"images/thumbs/"):imgOf(w,i);
+const DIMS={"images/thumbs/2024-napier-palms-framed.webp":[604,700],"images/thumbs/2023-moored-boats.webp":[700,519],"images/thumbs/coffee-machine.webp":[700,410],"images/thumbs/2024-figure-in-landscape.webp":[700,700],"images/thumbs/2022-blue-tractor.webp":[700,700],"images/thumbs/2022-skeleton-with-lights.webp":[563,700],"images/thumbs/2024-glowing-figure.webp":[518,700],"images/thumbs/2022-girl-on-a-railing.webp":[455,700],"images/thumbs/2026-morning-brew-framed.webp":[577,700],"images/thumbs/2023-mountain-valley.webp":[700,555],"images/thumbs/wave-study-on-location.webp":[700,700],"images/thumbs/2022-rusted-tractor.webp":[700,381],"images/thumbs/2023-james-doomscrolling.webp":[700,523],"images/thumbs/2022-surf-on-the-rocks.webp":[700,489],"images/thumbs/2022-mountain-road.webp":[700,483],"images/thumbs/2022-bach-on-the-beach.webp":[700,525],"images/thumbs/waterfall-study-on-location.webp":[700,700],"images/thumbs/2026-portrait.webp":[552,700],"images/thumbs/2024-skeletons-and-figures.webp":[700,525],"images/thumbs/2024-skeleton-on-yellow.webp":[700,700],"images/thumbs/2026-skeleton-reading.webp":[560,700],"images/thumbs/2024-napier-palms-easel.webp":[700,700],"images/thumbs/2023-braided-river.webp":[700,525],"images/thumbs/2023-alpine-peak.webp":[700,525],"images/thumbs/2025-skeleton-bedside.webp":[459,700],"images/thumbs/clouds-framed.webp":[436,700],"images/thumbs/2026-carolina-reaper.webp":[700,700],"images/thumbs/2023-night-battle.webp":[700,481],"images/thumbs/2023-greyhound.webp":[700,527],"images/thumbs/2024-melting-smile.webp":[572,700],"images/thumbs/2023-sheep-and-stones.webp":[700,700],"images/thumbs/film/cyclonefxconcepts-blk-0002.webp":[700,355],"images/thumbs/film/deadpoolconcepts-a-0002.webp":[700,355],"images/thumbs/film/untitled5.webp":[700,377],"images/thumbs/film/revl-facemush-sb-260121-v04-0002.webp":[700,369],"images/thumbs/film/piglinscombined-001.webp":[700,394],"images/thumbs/film/piglinscombined-002.webp":[700,394],"images/thumbs/film/damsel-b-0007.webp":[700,453],"images/thumbs/film/totem-final.webp":[700,431],"images/thumbs/film/smoulderinghulk-a-001.webp":[700,292],"images/thumbs/film/squealers-001.webp":[700,394],"images/thumbs/film/greathog-004.webp":[700,384],"images/thumbs/film/kanjicreature-bid-0004.webp":[700,394],"images/thumbs/film/piglinscombined-003.webp":[700,394],"images/thumbs/film/greathog-006.webp":[700,394],"images/thumbs/film/unicorn-a-0004.webp":[700,294],"images/thumbs/film/deadpoolconcepts-a-0003.webp":[700,355],"images/thumbs/film/ghasts-002.webp":[700,376],"images/thumbs/film/bee-001.webp":[700,362],"images/thumbs/film/revl-bryanphase02-sb260429-v02-0001.webp":[700,394],"images/thumbs/film/kanjicreature-bid-0007.webp":[700,394],"images/thumbs/film/damsel-b-0008.webp":[700,453]};
+const toThumb=src=>src.replace(/^images\//,"images/thumbs/").replace(/\.jpg$/,".webp");
+const wh=t=>DIMS[t]?` width="${DIMS[t][0]}" height="${DIMS[t][1]}"`:"";
+const thumbOf=(w,i)=>w.src?toThumb(w.src):imgOf(w,i);
 const line=(...a)=>a.filter(Boolean).join(", ");
 
 /* ---------- render ---------- */
 document.getElementById("yr").textContent=new Date().getFullYear();
-document.getElementById("heroImg").src=HERO.src||placeholder(42,0.6);
+
 document.getElementById("heroTitle").textContent=HERO.title;
 document.getElementById("heroSub").textContent=HERO.sub;
 {const p=document.getElementById("portrait");if(p)p.src=PORTRAIT||placeholder(7,1.25);}
@@ -300,17 +304,17 @@ const avail=document.getElementById("avail");
 WORKS.forEach((w,i)=>{ if(!w.available) return;
   const el=document.createElement("figure"); el.className="work reveal";
   const subj=encodeURIComponent("Enquiry: "+line(w.title,w.year));
-  const aSrc=w.availSrc?w.availSrc.replace(/^images\//,"images/thumbs/"):thumbOf(w,i);
-  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(w.title,w.year)}" src="${aSrc}"></div>
+  const aSrc=w.availImgs?toThumb(w.availImgs[0]):w.availSrc?toThumb(w.availSrc):thumbOf(w,i);
+  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(w.title,w.year)}" src="${aSrc}"${wh(aSrc)}></div>
     <figcaption class="meta"><span><b>${w.title}</b>${w.year?", "+w.year:""}${line(w.medium,w.size)?"<br>"+line(w.medium,w.size):""}</span>${w.sold?'<img class="sold-mini" src="images/sold-stamp.png" alt="Sold">':`<span>${w.available}</span>`}</figcaption>
-    ${w.sold?"":`<a class="enq caps" href="mailto:${EMAIL}?subject=${subj}" onclick="event.stopPropagation()">Enquire</a>`}`;
+    ${w.sold?"":`<a class="enq caps" href="mailto:${EMAIL}?subject=${subj}" aria-label="Enquire about ${w.title}" onclick="event.stopPropagation()">Enquire</a>`}`;
   el.querySelector(".frame").onclick=()=>w.availImgs?openList(w.availImgs,w):w.availSrc?openList([w.availSrc,imgOf(w,i)],w):openList([imgOf(w,i)],w);
   avail.appendChild(el);
 });
 
 const filmGrid=document.getElementById("filmGrid");
 FILM.forEach((f,i)=>{const el=document.createElement("figure");el.className="work reveal";
-  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(f.show,f.title)}" src="${f.src.replace(/^images\//,"images/thumbs/")}"></div>
+  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(f.show,f.title)}" src="${toThumb(f.src)}"${wh(toThumb(f.src))}></div>
     <figcaption class="meta"><span><b>${f.show?f.show+" — ":""}${f.title}</b>${f.year?", "+f.year:""}</span><span>${f.role||""}</span></figcaption>`;
   el.onclick=()=>{lbImgEl.style.transition="none";lbImgEl.style.transform="";lbImgEl.style.opacity="1";openFilm(i);preloadAround()}; filmGrid.appendChild(el);});
 
@@ -319,7 +323,7 @@ WORKS.forEach((w,i)=>{
   if(w.availableOnly) return;
   const el=document.createElement("figure");
   el.className="work reveal";el.dataset.cat=w.cat;el.dataset.i=i;
-  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(w.title,w.year)}" src="${thumbOf(w,i)}"></div>
+  el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(w.title,w.year)}" src="${thumbOf(w,i)}"${wh(thumbOf(w,i))}></div>
     <figcaption class="meta"><span><b>${w.title}</b>${w.year?", "+w.year:""}</span><span>${w.medium||""}</span></figcaption>`;
   el.onclick=()=>openLb(i);
   grid.appendChild(el);
