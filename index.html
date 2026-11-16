@@ -243,6 +243,8 @@ const WORKS = [
   { title:"Alpine peak", year:"2023", medium:"", size:"", cat:"Landscape", src:"images/2023-alpine-peak.jpg" },
   { title:"Morning Brew", year:"2026", medium:"Oil on linen, framed", size:"75 × 60 cm", cat:"Figurative", available:"$2,895 NZD", availSrc:"images/2026-morning-brew-framed.jpg", src:"images/2026-skeleton-reading.jpg" },
   { title:"Carolina Reaper", year:"2026", medium:"Oil on wood, framed", size:"13.5 × 13.5 cm", cat:"", availableOnly:true, available:"$185 NZD", src:"images/2026-carolina-reaper.jpg" },
+  { title:"Napier Palms", year:"2024", medium:"Oil on wood, framed", size:"", cat:"", availableOnly:true, available:"$600 NZD", availImgs:["images/2024-napier-palms-framed.jpg","images/2024-napier-palms-easel.jpg"], src:"images/2024-napier-palms-framed.jpg" },
+  { title:"Clouds", year:"", medium:"Oil on wood, framed", size:"", cat:"", availableOnly:true, available:"$750 NZD", src:"images/clouds-framed.jpg" },
   { title:"Moored boats", year:"2023", medium:"", size:"", cat:"Landscape", src:"images/2023-moored-boats.jpg" },
   { title:"David", year:"2024", medium:"Oil on linen", size:"110 × 110 cm", cat:"Figurative", src:"images/2024-figure-in-landscape.jpg" },
   { title:"Big Wave", year:"2022", medium:"Oil", size:"", cat:"Landscape", src:"images/2022-surf-on-the-rocks.jpg" },
@@ -302,7 +304,7 @@ WORKS.forEach((w,i)=>{ if(!w.available) return;
   el.innerHTML=`<div class="frame"><img loading="lazy" alt="${line(w.title,w.year)}" src="${aSrc}"></div>
     <figcaption class="meta"><span><b>${w.title}</b>${w.year?", "+w.year:""}${line(w.medium,w.size)?"<br>"+line(w.medium,w.size):""}</span>${w.sold?'<img class="sold-mini" src="images/sold-stamp.png" alt="Sold">':`<span>${w.available}</span>`}</figcaption>
     ${w.sold?"":`<a class="enq caps" href="mailto:${EMAIL}?subject=${subj}" onclick="event.stopPropagation()">Enquire</a>`}`;
-  el.querySelector(".frame").onclick=()=>w.availSrc?openList([w.availSrc,imgOf(w,i)],w):openLb(i);
+  el.querySelector(".frame").onclick=()=>w.availImgs?openList(w.availImgs,w):w.availSrc?openList([w.availSrc,imgOf(w,i)],w):openList([imgOf(w,i)],w);
   avail.appendChild(el);
 });
 
