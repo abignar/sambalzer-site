@@ -84,6 +84,18 @@
   .film-grid .work{margin:0}
   .frame{position:relative}
   .sold-mini{height:36px;width:auto;flex:none;align-self:flex-start;margin-top:-6px;transform:rotate(-4deg)}
+  .ml{max-width:620px}
+  .ml-lead{font-size:clamp(17px,1.6vw,21px);font-weight:300;line-height:1.45;margin-bottom:20px}
+  .ml-form{display:flex;gap:10px;flex-wrap:wrap}
+  .ml-form input[type=email]{flex:1 1 260px;font:inherit;padding:13px 14px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:2px}
+  .ml-form input[type=email]:focus{outline:2px solid var(--ink);outline-offset:1px}
+  .ml-form button{font:inherit;padding:13px 26px;border:1px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer;border-radius:2px;letter-spacing:.12em;font-size:12px;font-weight:500}
+  .ml-form button:disabled{opacity:.6;cursor:default}
+  .ml-msg{min-height:1.5em;margin-top:12px}
+  .ml-small{color:var(--muted);font-size:13px;margin-top:4px}
+  .ml-small a{border-bottom:1px solid var(--line)}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   /* Grid */
   .grid{columns:3 280px;column-gap:clamp(14px,2vw,28px)}
   .work{break-inside:avoid;margin-bottom:clamp(14px,2vw,28px);cursor:zoom-in}
@@ -172,6 +184,21 @@
     <a class="caps" href="https://www.imdb.com/name/nm5470835/" target="_blank" rel="noopener" style="border-bottom:1px solid var(--ink)">Full credits on IMDb ↗</a>
   </div>
   <div class="film-grid" id="filmGrid"></div>
+</section>
+
+<section id="mailing-list">
+  <div class="sec-head"><span class="caps">Mailing list</span></div>
+  <div class="ml">
+    <p class="ml-lead">Be the first to hear about new paintings, available work and shows.</p>
+    <form class="ml-form" id="mlForm" novalidate>
+      <label class="sr-only" for="mlEmail">Email address</label>
+      <input type="email" id="mlEmail" name="email" placeholder="your@email.com" autocomplete="email" required>
+      <input type="text" name="website" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
+      <button type="submit" class="caps">Join</button>
+    </form>
+    <p class="ml-msg" id="mlMsg" role="status" aria-live="polite"></p>
+    <p class="ml-small">No spam. <a href="/unsubscribe">Unsubscribe</a> any time.</p>
+  </div>
 </section>
 
 <section id="contact">
@@ -336,6 +363,19 @@ const filters=document.getElementById("filters");
     grid.querySelectorAll(".work").forEach(el=>el.classList.toggle("hide",c!=="All"&&el.dataset.cat!==c));};
   filters.appendChild(b);
 });
+
+/* ---------- mailing list ---------- */
+(()=>{const f=document.getElementById("mlForm"),m=document.getElementById("mlMsg"),b=f.querySelector("button");
+ f.addEventListener("submit",async e=>{e.preventDefault();const email=f.email.value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){m.textContent="Please enter a valid email address.";return}
+  b.disabled=true;m.textContent="Joining…";
+  try{const r=await fetch("/api/subscribe",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({email,website:f.website.value})});
+   const d=await r.json().catch(()=>({}));
+   if(r.ok&&d.ok){m.textContent=d.already?"You're already on the list. Thanks!":"Thanks! You're on the list.";f.reset()}
+   else if(d.error==="invalid_email"){m.textContent="Please enter a valid email address."}
+   else{m.textContent="Sorry, that didn't work. Please email sam@sbalzer.com to join."}}
+  catch(err){m.textContent="Sorry, that didn't work. Please email sam@sbalzer.com to join."}
+  b.disabled=false;});})();
 
 /* ---------- lightbox ---------- */
 const lb=document.getElementById("lb");let cur=0;

@@ -1,6 +1,13 @@
 {
-  // Cloudflare config: serve this folder as a static website.
+  // Cloudflare config: static website + small worker for the mailing list.
   "name": "sambalzer-site",
   "compatibility_date": "2026-11-01",
-  "assets": { "directory": "./" }
+  "main": "worker.js",
+  "assets": {
+    "directory": "./",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*", "/admin", "/unsubscribe"]
+  }
+  // The mailing-list storage (SUBSCRIBERS) and email (EMAIL) bindings get added
+  // here once they're created in the Cloudflare dashboard. See README.
 }
