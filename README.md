@@ -32,6 +32,13 @@ A single-page portfolio site. No build step: it's just `index.html` plus an `ima
 - Open the repo → `images` → **Add file → Upload files** to add images (do the same inside `images/thumbs`).
 - Open `index.html` → pencil icon → edit the `WORKS` list → **Commit changes**.
 
+## Admin page (sbalzer.com/admin)
+
+Log in with the `ADMIN_KEY` password. Two tabs:
+
+- **Paintings**: a private tracker for works you have on or want to do. Each painting has a status (Idea, To do, In progress, Done), a progress slider, a next step, an optional due date, medium/size, notes, and a dated progress log. Stored in the same KV namespace as the mailing list (key `tracker:projects`), so it's the same on phone and PC. Nothing here appears on the public site.
+- **Mailing list**: subscribers, copy for BCC, CSV download.
+
 ## Other things you can change in `index.html`
 
 - `HERO` — the big cover image, its title and the line under it.
