@@ -96,6 +96,12 @@
   .ml-small a{border-bottom:1px solid var(--line)}
   .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
   .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .pop{position:fixed;right:20px;bottom:20px;z-index:40;width:min(340px,calc(100vw - 40px));background:var(--bg);color:var(--ink);border:1px solid var(--ink);padding:22px 22px 20px;box-shadow:0 10px 30px rgba(0,0,0,.12);opacity:0;transform:translateY(16px);transition:opacity .35s ease,transform .35s ease;pointer-events:none}
+  .pop.show{opacity:1;transform:none;pointer-events:auto}
+  .pop p{font-size:17px;font-weight:400;line-height:1.4;margin:0 26px 16px 0}
+  .pop a.pop-go{display:inline-block;padding:11px 22px;background:var(--ink);color:var(--bg);letter-spacing:.12em;font-size:12px;font-weight:500}
+  .pop button.pop-x{position:absolute;top:8px;right:8px;width:34px;height:34px;border:0;background:none;color:var(--ink);font-size:22px;line-height:1;cursor:pointer}
+  @media (prefers-reduced-motion:reduce){.pop{transition:none}}
   /* Grid */
   .grid{columns:3 280px;column-gap:clamp(14px,2vw,28px)}
   .work{break-inside:avoid;margin-bottom:clamp(14px,2vw,28px);cursor:zoom-in}
@@ -208,6 +214,12 @@
     <div><span class="label caps">Instagram</span><div class="big"><a href="https://www.instagram.com/sam_balzer_art/" target="_blank" rel="noopener">@sam_balzer_art</a></div></div>
   </div>
 </section>
+
+<aside class="pop" id="pop" role="dialog" aria-label="Join the mailing list" aria-hidden="true">
+  <button class="pop-x" id="popX" aria-label="Close" tabindex="-1">&times;</button>
+  <p>Wanna see more cool stuff? Join the mailing list for some less than frequent updates!</p>
+  <a class="pop-go caps" id="popGo" href="#mailing-list" tabindex="-1">Sign up</a>
+</aside>
 
 <footer class="caps">
   <span>© <span id="yr"></span> Sam Balzer</span>
@@ -371,11 +383,30 @@ const filters=document.getElementById("filters");
   b.disabled=true;m.textContent="Joining…";
   try{const r=await fetch("/api/subscribe",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({email,website:f.website.value})});
    const d=await r.json().catch(()=>({}));
-   if(r.ok&&d.ok){m.textContent=d.already?"You're already on the list. Thanks!":"Thanks! You're on the list.";f.reset()}
+   if(r.ok&&d.ok){try{localStorage.setItem("mlPop","joined")}catch(_){}m.textContent=d.already?"You're already on the list. Thanks!":"Thanks! You're on the list.";f.reset()}
    else if(d.error==="invalid_email"){m.textContent="Please enter a valid email address."}
    else{m.textContent="Sorry, that didn't work. Please email sam@sbalzer.com to join."}}
   catch(err){m.textContent="Sorry, that didn't work. Please email sam@sbalzer.com to join."}
   b.disabled=false;});})();
+
+/* ---------- mailing list pop-up: once per visitor, after 25s or half-way down ---------- */
+(()=>{const P=document.getElementById("pop"),X=document.getElementById("popX"),G=document.getElementById("popGo"),S=document.getElementById("mailing-list");
+ let seen=null;try{seen=localStorage.getItem("mlPop")}catch(_){}
+ if(seen)return;
+ let shown=false,t;
+ const remember=v=>{try{localStorage.setItem("mlPop",v)}catch(_){}};
+ const inView=()=>{const r=S.getBoundingClientRect();return r.top<innerHeight&&r.bottom>0};
+ const lbOpen=()=>{const lb=document.querySelector(".lb");return lb&&lb.classList.contains("open")};
+ const show=()=>{if(shown)return;if(inView()||lbOpen()){t=setTimeout(show,8000);return}
+  shown=true;remember("seen");removeEventListener("scroll",onScroll);clearTimeout(t);
+  P.classList.add("show");P.setAttribute("aria-hidden","false");X.tabIndex=0;G.tabIndex=0};
+ const hide=()=>{P.classList.remove("show");P.setAttribute("aria-hidden","true");X.tabIndex=-1;G.tabIndex=-1};
+ const onScroll=()=>{if(scrollY>(document.documentElement.scrollHeight-innerHeight)*0.5)show()};
+ X.onclick=hide;
+ G.onclick=e=>{e.preventDefault();hide();S.scrollIntoView({behavior:"smooth"});setTimeout(()=>document.getElementById("mlEmail").focus({preventScroll:true}),600)};
+ addEventListener("keydown",e=>{if(e.key==="Escape"&&shown)hide()});
+ addEventListener("scroll",onScroll,{passive:true});
+ t=setTimeout(show,25000);})();
 
 /* ---------- lightbox ---------- */
 const lb=document.getElementById("lb");let cur=0;
