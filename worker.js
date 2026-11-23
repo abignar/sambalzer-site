@@ -118,7 +118,9 @@ function cleanProject(p, existing) {
 }
 
 const PAGE_STYLE = `
-  body{margin:0;background:#f2f0eb;color:#141414;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.5}
+  @font-face{font-family:Supreme;src:url(/fonts/supreme-400.woff2) format("woff2");font-weight:400;font-display:swap}
+  @font-face{font-family:Supreme;src:url(/fonts/supreme-500.woff2) format("woff2");font-weight:500;font-display:swap}
+  body{margin:0;background:#f2f0eb;color:#141414;font-family:Supreme,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.5}
   main{max-width:760px;margin:0 auto;padding:48px 20px}
   h1{font-weight:500;font-size:26px;margin:0 0 6px}
   p{color:#5f5c56}
@@ -214,6 +216,7 @@ const ADMIN_PAGE = `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
   <div class="row">
    <button id="copy">Copy all (for BCC)</button>
    <button class="ghost" id="csv">Download CSV</button>
+   <button class="ghost" id="unsub">Copy unsubscribe link</button>
   </div>
   <div class="msg" id="msg"></div>
   <table><thead><tr><th>Email</th><th>Joined</th><th></th></tr></thead><tbody id="rows"></tbody></table>
@@ -323,6 +326,13 @@ $("lf").onsubmit=e=>{e.preventDefault();KEY=$("pw").value;start()};
 $("copy").onclick=async()=>{const t=LIST.map(s=>s.email).join(", ");
   try{await navigator.clipboard.writeText(t);$("msg").textContent="Copied "+LIST.length+" addresses. Paste them into BCC."}
   catch(e){prompt("Copy these addresses:",t)}};
+$("unsub").onclick=async()=>{
+  const url="https://sbalzer.com/unsubscribe";
+  const htm='<p style="font-size:12px;color:#888888;margin-top:24px">Don&#39;t want these emails any more? <a href="'+url+'" style="color:#888888">Unsubscribe here</a>.</p>';
+  const txt="Don't want these emails any more? Unsubscribe here: "+url;
+  try{await navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([htm],{type:"text/html"}),"text/plain":new Blob([txt],{type:"text/plain"})})]);
+    $("msg").textContent="Copied. Paste it at the bottom of your email."}
+  catch(e){try{await navigator.clipboard.writeText(txt);$("msg").textContent="Copied. Paste it at the bottom of your email."}catch(_){prompt("Copy this:",txt)}}};
 $("csv").onclick=()=>{const csv="email,joined\\n"+LIST.map(s=>s.email+","+s.joined).join("\\n");
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
   a.download="sbalzer-mailing-list.csv";a.click()};
@@ -332,17 +342,36 @@ if(KEY)start();
 
 const UNSUB_PAGE = `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
-<title>Unsubscribe · Sam Balzer</title><style>${PAGE_STYLE}</style></head><body><main>
-<h1>Unsubscribe</h1>
-<p>Enter your email to stop receiving updates from Sam Balzer.</p>
-<form class="row" id="f"><input type="email" id="e" placeholder="you@example.com" required><button>Unsubscribe</button></form>
-<div class="msg" id="m"></div>
-<p><a href="/">← Back to sbalzer.com</a></p>
+<link rel="icon" href="/images/logo.png">
+<title>Unsubscribe · Sam Balzer</title><style>${PAGE_STYLE}
+  main{max-width:520px;padding-top:40px}
+  .logo{display:block;width:64px;margin-bottom:56px}.logo img{width:100%;height:auto;display:block}
+  h1{font-size:30px;margin-bottom:10px}
+  p{font-size:16px}
+  form{margin:26px 0 6px}
+  input[type=email]{flex:1 1 240px;padding:13px 14px;border-radius:2px}
+  button{padding:13px 22px;border-radius:2px;letter-spacing:.08em;text-transform:uppercase;font-size:12px;font-weight:500}
+  .back{display:inline-block;margin-top:40px;color:#5f5c56;font-size:14px}
+</style></head><body><main>
+<a class="logo" href="/"><img src="/images/logo.png" alt="Sam Balzer"></a>
+<div id="ask">
+ <h1>Unsubscribe</h1>
+ <p>Enter your email address and you'll be taken off Sam Balzer's mailing list. No more emails.</p>
+ <form class="row" id="f"><input type="email" id="e" placeholder="your@email.com" autocomplete="email" required><button>Unsubscribe</button></form>
+ <div class="msg" id="m" role="status" aria-live="polite"></div>
+</div>
+<div id="done" hidden>
+ <h1>You're unsubscribed</h1>
+ <p>You won't get any more emails from the mailing list. Thanks for following along, and if you change your mind you can always join again from the website.</p>
+</div>
+<a class="back" href="/">\u2190 Back to sbalzer.com</a>
 <script>
-const q=new URLSearchParams(location.search).get("email"); if(q) document.getElementById("e").value=q;
-document.getElementById("f").onsubmit=async e=>{e.preventDefault();
-  const r=await fetch("/api/unsubscribe",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({email:document.getElementById("e").value})});
-  document.getElementById("m").textContent=r.ok?"Done. You've been removed from the list.":"Something went wrong. Please email sam@sbalzer.com."};
+const $=id=>document.getElementById(id);
+const q=new URLSearchParams(location.search).get("email"); if(q) $("e").value=q;
+$("f").onsubmit=async e=>{e.preventDefault();const b=$("f").querySelector("button");b.disabled=true;$("m").textContent="One moment\u2026";
+  try{const r=await fetch("/api/unsubscribe",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({email:$("e").value})});
+    if(!r.ok)throw 0;$("ask").hidden=true;$("done").hidden=false}
+  catch(_){$("m").textContent="Something went wrong. Please email sam@sbalzer.com and Sam will remove you.";b.disabled=false}};
 </script></main></body></html>`;
 
 export default {
