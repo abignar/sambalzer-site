@@ -47,9 +47,12 @@ async function readBody(request) {
 }
 
 function isAdmin(request, env) {
-  const key = request.headers.get("x-admin-key") || "";
-  return Boolean(env.ADMIN_KEY) && key.length > 0 && key === env.ADMIN_KEY;
+  const key = (request.headers.get("x-admin-key") || "").trim();
+  const want = String(env.ADMIN_KEY || "").trim();
+  return want.length > 0 && key.length > 0 && key === want;
 }
+const denied = (env) =>
+  json({ ok: false, error: String(env.ADMIN_KEY || "").trim() ? "wrong_password" : "no_password_set" }, 403);
 
 async function listAll(env) {
   const out = [];
@@ -166,7 +169,7 @@ const ADMIN_PAGE = `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <title>Admin · Sam Balzer</title><style>${PAGE_STYLE}${ADMIN_STYLE}</style></head><body><main>
 <h1>Admin</h1>
 <div id="login"><p>Enter your admin password.</p>
- <form class="row" id="lf"><input type="password" id="pw" placeholder="Password" autocomplete="current-password" required><button>Open</button></form>
+ <form class="row" id="lf"><input type="password" id="pw" placeholder="Password" autocomplete="off" required><button>Open</button></form>
  <div class="msg" id="lmsg"></div></div>
 <div id="app" hidden>
  <div class="tabs">
@@ -230,8 +233,10 @@ async function api(path,body){
   const opt={headers:{"x-admin-key":KEY}};
   if(body!==undefined){opt.method="POST";opt.headers["content-type"]="application/json";opt.body=JSON.stringify(body)}
   const r=await fetch(path,opt);
-  if(r.status===403){sessionStorage.removeItem("ak");$("lmsg").textContent="That password didn't work.";
+  if(r.status===403){sessionStorage.removeItem("ak");const d=await r.json().catch(()=>({}));
+    $("lmsg").textContent=d.error==="no_password_set"?"The site can't see a password yet. In Cloudflare, check the secret is named exactly ADMIN_KEY on sambalzer-site, then wait a minute.":"That password didn't work.";
     $("login").hidden=false;$("app").hidden=true;throw new Error("auth")}
+  if(r.status===503)throw new Error("storage not connected");
   if(!r.ok)throw new Error("error "+r.status);
   return r.json();
 }
@@ -373,24 +378,24 @@ export default {
       }
 
       if (path === "/api/list" && request.method === "GET") {
-        if (!isAdmin(request, env)) return json({ ok: false }, 403);
+        if (!isAdmin(request, env)) return denied(env);
         return json({ ok: true, subscribers: await listAll(env) });
       }
 
       if (path === "/api/remove" && request.method === "POST") {
-        if (!isAdmin(request, env)) return json({ ok: false }, 403);
+        if (!isAdmin(request, env)) return denied(env);
         const email = cleanEmail((await readBody(request)).email);
         if (email) await env.SUBSCRIBERS.delete("sub:" + email);
         return json({ ok: true });
       }
 
       if (path === "/api/projects" && request.method === "GET") {
-        if (!isAdmin(request, env)) return json({ ok: false }, 403);
+        if (!isAdmin(request, env)) return denied(env);
         return json({ ok: true, projects: await getProjects(env) });
       }
 
       if (path === "/api/projects/save" && request.method === "POST") {
-        if (!isAdmin(request, env)) return json({ ok: false }, 403);
+        if (!isAdmin(request, env)) return denied(env);
         const input = (await readBody(request)).project;
         const list = await getProjects(env);
         const i = list.findIndex((p) => p.id === input?.id);
@@ -403,7 +408,7 @@ export default {
       }
 
       if (path === "/api/projects/delete" && request.method === "POST") {
-        if (!isAdmin(request, env)) return json({ ok: false }, 403);
+        if (!isAdmin(request, env)) return denied(env);
         const id = (await readBody(request)).id;
         const list = (await getProjects(env)).filter((p) => p.id !== id);
         await env.SUBSCRIBERS.put(PROJ_KEY, JSON.stringify(list));
